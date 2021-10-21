@@ -1,4 +1,4 @@
-import { createContext } from "react";
+import { createContext, useContext, useState } from "react";
 
 const ResultContext = createContext();
 const BASE_URI = "https://google-search3.p.rapidapi.com/api/v1";
@@ -6,7 +6,7 @@ const BASE_URI = "https://google-search3.p.rapidapi.com/api/v1";
 export const ResultContextProvider = ({ children }) => {
 	const [results, setResults] = useState([]);
 	const [isLoading, setIsLoading] = useState(false);
-	const [searchQuery, setSearchQuery] = useState("");
+	const [searchQuery, setSearchQuery] = useState("React and Tailwind css");
 
 	// /videos,/search,/images
 	const getResults = async type => {
@@ -23,7 +23,13 @@ export const ResultContextProvider = ({ children }) => {
 
 		const data = await res.json();
 
-		setResults(data);
+		if (type.includes("/news")) {
+			setResults(data.entries);
+		} else if (type.includes("/images")) {
+			setResults(data.image_results);
+		} else {
+			setResults(data.results);
+		}
 
 		setIsLoading(false);
 	};
